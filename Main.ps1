@@ -102,7 +102,7 @@ foreach ($module in $coreModules) {
 }
 
 # Check XAML file
-$xamlPath = Join-Path (Split-Path $mainScript -Parent) ".." | Join-Path -ChildPath "UI" | Join-Path -ChildPath "NetworkManagement.xaml"
+$xamlPath = Join-Path (Split-Path $mainScript -Parent) ".." | Join-Path -ChildPath ".." | Join-Path -ChildPath "UI" | Join-Path -ChildPath "NetworkManagement.xaml"
 if (-not (Test-Path $xamlPath -PathType Leaf)) {
     Write-Host "ERROR: XAML file not found at $xamlPath" -ForegroundColor Red
     Write-Host "Please check that the file exists and the path is correct" -ForegroundColor Yellow
