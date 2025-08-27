@@ -39,7 +39,7 @@ $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Path to the main script
 $appFolder = "Network Management"
-$mainScript = Join-Path $scriptPath $appFolder | Join-Path -ChildPath "Core" | Join-Path -ChildPath "Site.ps1"
+$mainScript = Join-Path $scriptPath $appFolder | Join-Path -ChildPath "Core" | Join-Path -ChildPath "Site" | Join-Path -ChildPath "Site.ps1"
 
 # Check if the app folder and main script exist
 $appFolderPath = Join-Path $scriptPath $appFolder
@@ -56,7 +56,7 @@ if (-not (Test-Path -Path $mainScript -PathType Leaf)) {
 }
 
 # Load required class definitions
-$importExportScript = Join-Path $appFolderPath "Core" | Join-Path -ChildPath "DataModels.ps1"
+$importExportScript = Join-Path $appFolderPath "Core" | Join-Path -ChildPath "Site" | Join-Path -ChildPath "DataModels.ps1"
 if (-not (Test-Path -Path $importExportScript -PathType Leaf)) {
     Write-Host "ERROR: DataModels script not found at $importExportScript" -ForegroundColor Red
     Read-Host "Press Enter to exit"
@@ -76,11 +76,11 @@ catch {
 
 # Import all required modules
 $coreModules = @(
-    "DataModels.ps1",
-    "SiteImportExport.ps1", 
-    "IPNetworkModule.ps1",
-    "DeviceManager.ps1",
-    "EditSiteWindow.ps1"
+    "Site/DataModels.ps1",
+    "Site/SiteImportExport.ps1", 
+    "IP/IPNetworkModule.ps1",
+    "Site/DeviceManager.ps1",
+    "Site/EditSiteWindow.ps1"
 )
 
 foreach ($module in $coreModules) {
@@ -102,7 +102,7 @@ foreach ($module in $coreModules) {
 }
 
 # Check XAML file
-$xamlPath = Join-Path (Split-Path $mainScript -Parent) ".." | Join-Path -ChildPath "UI" | Join-Path -ChildPath "NetworkManagement.xaml"
+$xamlPath = Join-Path (Split-Path $mainScript -Parent) ".." | Join-Path -ChildPath ".." | Join-Path -ChildPath "UI" | Join-Path -ChildPath "NetworkManagement.xaml"
 if (-not (Test-Path $xamlPath -PathType Leaf)) {
     Write-Host "ERROR: XAML file not found at $xamlPath" -ForegroundColor Red
     Write-Host "Please check that the file exists and the path is correct" -ForegroundColor Yellow
