@@ -39,7 +39,7 @@ $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Path to the main script
 $appFolder = "Network Management"
-$mainScript = Join-Path $scriptPath $appFolder | Join-Path -ChildPath "Core" | Join-Path -ChildPath "Site.ps1"
+$mainScript = Join-Path $scriptPath $appFolder | Join-Path -ChildPath "Core" | Join-Path -ChildPath "Site" | Join-Path -ChildPath "Site.ps1"
 
 # Check if the app folder and main script exist
 $appFolderPath = Join-Path $scriptPath $appFolder
@@ -56,7 +56,7 @@ if (-not (Test-Path -Path $mainScript -PathType Leaf)) {
 }
 
 # Load required class definitions
-$importExportScript = Join-Path $appFolderPath "Core" | Join-Path -ChildPath "DataModels.ps1"
+$importExportScript = Join-Path $appFolderPath "Core" | Join-Path -ChildPath "Site" | Join-Path -ChildPath "DataModels.ps1"
 if (-not (Test-Path -Path $importExportScript -PathType Leaf)) {
     Write-Host "ERROR: DataModels script not found at $importExportScript" -ForegroundColor Red
     Read-Host "Press Enter to exit"
@@ -76,15 +76,15 @@ catch {
 
 # Import all required modules
 $coreModules = @(
-    "DataModels.ps1",
-    "SiteImportExport.ps1", 
-    "IPNetworkModule.ps1",
-    "DeviceManager.ps1",
-    "EditSiteWindow.ps1"
+    @{ Name = "DataModels.ps1"; Path = "Site" },
+    @{ Name = "SiteImportExport.ps1"; Path = "Site" },
+    @{ Name = "IPNetworkModule.ps1"; Path = "IP" },
+    @{ Name = "DeviceManager.ps1"; Path = "Site" },
+    @{ Name = "EditSiteWindow.ps1"; Path = "Site" }
 )
 
 foreach ($module in $coreModules) {
-    $modulePath = Join-Path $appFolderPath "Core" | Join-Path -ChildPath $module
+    $modulePath = Join-Path $appFolderPath "Core" | Join-Path -ChildPath $module.Path | Join-Path -ChildPath $module.Name
     if (-not (Test-Path $modulePath -PathType Leaf)) {
         Write-Host "WARNING: Module not found at $modulePath" -ForegroundColor Yellow
         continue
@@ -92,10 +92,10 @@ foreach ($module in $coreModules) {
     
     try {
         . $modulePath
-        Write-Host "Loaded module: $module" -ForegroundColor Green
+        Write-Host "Loaded module: $($module.Name)" -ForegroundColor Green
     }
     catch {
-        Write-Host "ERROR: Failed to load module $module : $_" -ForegroundColor Red
+        Write-Host "ERROR: Failed to load module $($module.Name) : $_" -ForegroundColor Red
         Read-Host "Press Enter to exit"
         exit 1
     }
